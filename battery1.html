@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .data-container {
+            background-color: #ffffff;
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            padding: 20px;
+        }
+        .data-container .title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .chart-container {
+            width: 600px;
+            height: 300px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header style="width: 100%; background-color: #000; color: #fff; padding: 10px; position: absolute; top: 0; left: 0; display: flex; align-items: center; height: 60px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <img src="images/CellControl.png" alt="Cell Control Logo" style="height: 40px; margin-bottom: 10px; filter: invert(100%);">
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <div style="width: 30px; height: 30px; background-color: #fff; color: #000; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 0.8em; font-weight: bold;">S</div>
+            <button style="background-color: #ff4b5c; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.9em;" onclick="logout()">Logout</button>
+        </div>
+        
+</header>
+    <button style="position: absolute; top: 85px; left: 10px; padding: 5px 15px; font-size: 1em; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="window.location.href='batterySelect.html';">Back</button>
+    
+    <h1 style="text-align: center; font-size: 1.5em; margin-bottom: 20px;">Home</h1>
+    <div class="container">
+        <div class="data-container">
+            <div class="title" style="font-size: 0.9em;">Consumption (kWatt/min)</div>
+            <div id="data-display">Loading...</div>
+            <div style="margin-top: 10px; font-size: 0.9em; display: flex; align-items: center; gap: 5px;">
+                Status: connected <span style="width: 10px; height: 10px; background-color: #4CAF50; border-radius: 50%; display: inline-block;"></span>
+            </div>
+            <button id="connection-button" style="margin-top: 10px; padding: 10px 20px; font-size: 0.8em; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="toggleConnection()">Connected: Grid</button>
+            <p style="font-size: 0.3em; margin-top: 5px; color: #555;">On error system will transfer automatically</p>
+        </div>
+        <div class="chart-container" style="position: relative;">
+                <button style="position: absolute; top: 10px; right: 10px; padding: 5px 10px; font-size: 0.9em; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="showDownloadError()">Download</button>
+            <canvas id="consumption-chart"></canvas>
+        </div>
+        <div class="data-container" style="width: 200px; height: 300px;">
+            <div class="title" style="font-size: 1em; font-weight: bold;">Alarms</div>
+            <ul style="list-style: none; padding: 0; text-align: left; font-size: 0.7em;">
+                <li style="margin: 5px 0; display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    Low voltage <span style="width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; display: inline-block;"></span>
+                </li>
+                <li style="margin: 5px 0; display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    Over current <span style="width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; display: inline-block;"></span>
+                </li>
+                <li style="margin: 5px 0; display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                    Open circuit <span style="width: 8px; height: 8px; background-color: #4CAF50; border-radius: 50%; display: inline-block;"></span>
+                </li>
+                <li style="margin: 5px 0; display: flex; align-items: center; gap: 8px;">
+                    High temp <span style="width: 8px; height: 8px; background-color: yellow; border-radius: 50%; display: inline-block;"></span>
+                </li>
+            </ul>
+        </div>
+        </div>
+        <div class="button-container" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+            <button onclick="loadLiveData()">Live</button>
+            <button onclick="loadWeekData()">Week</button>
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let chart;
+
+        async function loadLiveData() {
+            const response = await fetch('data/minutes.csv');
+            const csvText = await response.text();
+            const rows = csvText.trim().split('\n');
+            const headers = rows[0].split(',').map(header => header.toLowerCase().trim());
+            const data = rows.slice(1).map(row => row.split(',').map(value => value.trim()));
+
+            const now = new Date();
+            const minutesOfDay = now.getHours() * 60 + now.getMinutes();
+
+            const minuteIndex = headers.indexOf('minute');
+            const kwattIndex = headers.indexOf('kwatt');
+
+            const kwattValue = data.find(row => parseInt(row[minuteIndex]) === minutesOfDay)?.[kwattIndex];
+
+            const display = document.getElementById('data-display');
+            display.textContent = kwattValue ? `${kwattValue} kW` : 'No Data';
+
+            const startMinute = Math.max(minutesOfDay - 180, 0);
+            const endMinute = minutesOfDay;
+
+            const chartData = data
+                .filter(row => {
+                    const minute = parseInt(row[minuteIndex]);
+                    return minute >= startMinute && minute <= endMinute;
+                })
+                .map(row => ({
+                    minute: parseInt(row[minuteIndex]),
+                    kwatt: parseFloat(row[kwattIndex])
+                }));
+
+            const labels = chartData.map(d => {
+                const hours = Math.floor(d.minute / 60);
+                const minutes = d.minute % 60;
+                return `${hours}:${minutes.toString().padStart(2, '0')}`;
+            });
+
+            const values = chartData.map(d => d.kwatt);
+
+            updateChart(labels, values, 'Time', 'kWatt', 0, 3);
+        }
+
+        async function loadWeekData() {
+            const response = await fetch('data/days.csv');
+            const csvText = await response.text();
+            const rows = csvText.trim().split('\n');
+            const headers = rows[0].split(',').map(header => header.toLowerCase().trim());
+            const data = rows.slice(1).map(row => row.split(',').map(value => value.trim()));
+
+            const now = new Date();
+            const today = now.getDate();
+
+            const dayIndex = headers.indexOf('dia');
+            const kwattIndex = headers.indexOf('kwatt');
+
+            const startDay = Math.max(today - 7, 1);
+            const endDay = today - 1;
+
+            const chartData = data
+                .filter(row => {
+                    const day = parseInt(row[dayIndex]);
+                    return day >= startDay && day <= endDay;
+                })
+                .map(row => ({
+                    day: parseInt(row[dayIndex]),
+                    kwatt: parseFloat(row[kwattIndex])
+                }));
+
+            const labels = chartData.map(d => {
+                const date = new Date(now.getFullYear(), now.getMonth(), d.day);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            const values = chartData.map(d => d.kwatt);
+
+            updateChart(labels, values, 'Days', 'kWatt', 0, 20);
+        }
+
+        function updateChart(labels, data, xAxisLabel, yAxisLabel, yMin, yMax) {
+            if (!chart) {
+                const ctx = document.getElementById('consumption-chart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'kWatt Consumption',
+                            data: data,
+                            borderColor: 'blue',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: xAxisLabel
+                                }
+                            },
+                            y: {
+                                min: yMin,
+                                max: yMax,
+                                ticks: {
+                                    stepSize: (yMax - yMin) / 10
+                                },
+                                title: {
+                                    display: true,
+                                    text: yAxisLabel
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = data;
+                chart.options.scales.x.title.text = xAxisLabel;
+                chart.options.scales.y.title.text = yAxisLabel;
+                chart.options.scales.y.min = yMin;
+                chart.options.scales.y.max = yMax;
+                chart.update();
+            }
+        }
+
+        loadLiveData();
+        setInterval(loadLiveData, 60000); // Refresh every 60 seconds
+    </script>
+    <script>
+        function showDownloadError() {
+            alert('Oops, something went wrong. Please contact support.');
+        }
+    </script>
+    <script>
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <script>
+        function toggleConnection() {
+    const button = document.getElementById('connection-button');
+    const statusText = document.querySelector('.data-container div:nth-of-type(3)');
+    const dataDisplay = document.getElementById('data-display');
+
+    button.disabled = true;
+    setTimeout(() => (button.disabled = false), 5000); // 5-second cooldown
+
+    // Simulate buffering for the kWatt value
+    const originalKwatt = dataDisplay.textContent;
+    dataDisplay.textContent = 'Buffering...';
+    setTimeout(() => {
+        dataDisplay.textContent = originalKwatt;
+    }, 500);
+
+    // Temporarily change the status to disconnected
+    const originalStatus = statusText.innerHTML;
+    statusText.innerHTML = 'Status: disconnected <span style="width: 10px; height: 10px; background-color: red; border-radius: 50%; display: inline-block;"></span>';
+    setTimeout(() => {
+        statusText.innerHTML = originalStatus;
+    }, 400);
+
+    // Toggle the connection status
+    if (button.textContent === 'Connected: Grid') {
+        button.textContent = 'Connected: Battery';
+        button.style.backgroundColor = '#28a745'; // Green color
+    } else {
+        button.textContent = 'Connected: Grid';
+        button.style.backgroundColor = '#007BFF'; // Blue color
+    }
+}
+    </script>
+</body>
+</html>

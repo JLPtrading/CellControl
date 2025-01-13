@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Battery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+        header {
+            width: 100%;
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            height: 60px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header img {
+            height: 40px;
+            margin-right: 10px;
+            filter: invert(100%);
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-left: auto;
+        }
+        .header-right .circle {
+            width: 30px;
+            height: 30px;
+            background-color: #fff;
+            color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .header-right .logout-btn {
+            background-color: #ff4b5c;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .header-right .logout-btn:hover {
+            background-color: #d83441;
+        }
+        .back-button {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            margin-top: 120px; /* Adjusted for header */
+        }
+        .form-container h1 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        .form-container input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="images/CellControl.png" alt="Cell Control Logo">
+        <div class="header-right">
+            <div class="circle">S</div>
+            <button class="logout-btn" onclick="window.location.href='index.html';">Logout</button>
+        </div>
+    </header>
+    <button class="back-button" onclick="window.location.href='batterySelect.html';">Back</button>
+    <div class="form-container">
+        <h1>Add Battery</h1>
+        <form id="add-battery-form">
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="text" id="ip-address" placeholder="IP Address" required>
+            <input type="text" id="user" placeholder="User" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('add-battery-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Clear all input fields
+            document.getElementById('name').value = '';
+            document.getElementById('ip-address').value = '';
+            document.getElementById('user').value = '';
+            document.getElementById('password').value = '';
+
+            alert('Battery added successfully!');
+        });
+    </script>
+</body>
+</html>
